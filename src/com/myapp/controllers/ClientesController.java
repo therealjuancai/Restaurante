@@ -39,37 +39,43 @@ public class ClientesController {
     public void addCliente(String Nombre,String Cedula,String Genero, String Edad){
         
          if (Nombre.isEmpty() || Cedula.isEmpty() || Genero.isEmpty() || Edad.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios. Por favor, complete todos los campos.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        if (Nombre.matches(".*\\d.*")) {
-            JOptionPane.showMessageDialog(null, "El nombre no puede contener números.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "All fields are mandatory. Please fill in all fields.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Validar la cédula
+        if (Nombre.matches(".*[\\d\\W].*")) {
+            JOptionPane.showMessageDialog(null, "The name cannot contain numbers or special characters.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validate the ID
         if (!Cedula.matches("\\d{1,10}")) {
-            JOptionPane.showMessageDialog(null, "La cédula debe contener solo números y tener hasta 10 caracteres.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "The ID must contain only numbers and be up to 10 characters long.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Validar la edad
+        // Validate the age
         int edadInt;
         try {
             edadInt = Integer.parseInt(Edad);
+            if (edadInt < 0) {
+                JOptionPane.showMessageDialog(null, "Age cannot be negative.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "La edad debe ser un número válido.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Age must be a valid number.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        String[][] aux=getArrayClientes();
-        for(String[] cliente : aux){
-            if(Cedula.equals(cliente[1])){
-                JOptionPane.showMessageDialog(null, "ya existe un cliente con esa cedula", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+
+        String[][] aux = getArrayClientes();
+        for (String[] cliente : aux) {
+            if (Cedula.equals(cliente[1])) {
+                JOptionPane.showMessageDialog(null, "A client with this ID already exists.", "Validation Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
-        // Si todas las validaciones pasan, crear el cliente y agregarlo
+
+        // If all validations pass, create the client and add it
         Cliente cliente = new Cliente(0, Nombre, Cedula, Genero, edadInt);
         clientesDAO.addCliente(cliente);
     }
@@ -82,32 +88,36 @@ public class ClientesController {
                 return;
             }
         }
-        JOptionPane.showMessageDialog(null, "No existe cliente con esa cedula", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, "No client exists with this DNI.", "Validation Error", JOptionPane.ERROR_MESSAGE);
     }
     
     public void updateCliente(String Nombre,String Cedula,String Genero, String Edad){
         if (Nombre.isEmpty() || Cedula.isEmpty() || Genero.isEmpty() || Edad.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios. Por favor, complete todos los campos.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        if (Nombre.matches(".*\\d.*")) {
-            JOptionPane.showMessageDialog(null, "El nombre no puede contener números.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "All fields are mandatory. Please fill in all fields.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Validar la cédula
+        if (Nombre.matches(".*[\\d\\W].*")) {
+            JOptionPane.showMessageDialog(null, "The name cannot contain numbers or special characters.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validate the ID
         if (!Cedula.matches("\\d{1,10}")) {
-            JOptionPane.showMessageDialog(null, "La cédula debe contener solo números y tener hasta 10 caracteres.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "The ID must contain only numbers and be up to 10 characters long.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Validar la edad
+        // Validate the age
         int edadInt;
         try {
             edadInt = Integer.parseInt(Edad);
+            if (edadInt < 0) {
+                JOptionPane.showMessageDialog(null, "Age cannot be negative.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "La edad debe ser un número válido.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Age must be a valid number.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
@@ -119,7 +129,7 @@ public class ClientesController {
                 return;
             }
         }
-        JOptionPane.showMessageDialog(null, "No existe cliente con esa cedula", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, "No client exists with this DNI.", "Validation Error", JOptionPane.ERROR_MESSAGE);
     }
     
 }

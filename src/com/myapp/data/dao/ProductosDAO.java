@@ -29,8 +29,7 @@ public class ProductosDAO {
         return productos;
     }
     
-    public void addProducto(Producto producto) {
-        int tipo=0;
+    public void addProducto(Producto producto,int tipo) {      
         String sql = "INSERT INTO Producto (tipo, nombre, descripcion, precio, imagen) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -45,31 +44,30 @@ public class ProductosDAO {
         }
     }
     
-    public void deleteProducto(int id) {
-        String sql = "DELETE FROM Producto WHERE id = ?";
+    public void deleteProducto(String nombre) {
+        String sql = "DELETE FROM Producto WHERE nombre = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
+            stmt.setString(1, nombre);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void updateProducto(Producto producto) {
-        int tipo=0;
-        String sql = "UPDATE Producto SET tipo = ?, nombre = ?, descripcion = ?, precio = ?, imagen = ? WHERE id = ?";
+    public void updateProducto(Producto producto,int tipo) {
+        String sql = "UPDATE Producto SET tipo = ?, descripcion = ?, precio = ?, imagen = ? WHERE nombre = ?";
         try (Connection conn = DatabaseConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, tipo);
-            stmt.setString(2, producto.getNombre());
-            stmt.setString(3, producto.getDescripcion());
-            stmt.setInt(4, producto.getPrecio());
-            stmt.setString(5, producto.getImagen());
-            stmt.setInt(6, producto.getId());
+            stmt.setString(2, producto.getDescripcion());
+            stmt.setInt(3, producto.getPrecio());
+            stmt.setString(4, producto.getImagen());
+            stmt.setString(5, producto.getNombre());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 }

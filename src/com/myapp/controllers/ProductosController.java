@@ -9,6 +9,7 @@ import com.myapp.data.dao.TipoProductoDAO;
 import com.myapp.models.Producto;
 import com.myapp.models.TipoProducto;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -50,6 +51,105 @@ public class ProductosController {
             data[i][5]=tipo.getImagen();
         }
         return data;
+    }
+    
+    public void addProducto(String tipo,String nombre,String descripcion,String Precio,String Img){
+        int tipoAux=0;
+        String [][] tipos=getArrayTipos();
+        for(String[] tipe:tipos){
+            if(tipe[1].equals(tipo))
+                tipoAux=Integer.parseInt(tipe[0]);
+        }
+        
+         if (nombre.isEmpty() || descripcion.isEmpty() || Precio.isEmpty() || Img.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "All fields are mandatory. Please fill in all fields.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if (nombre.matches(".*[\\d\\W].*")) {
+            JOptionPane.showMessageDialog(null, "The name cannot contain numbers or special characters.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+       
+        
+        int priceInt;
+        try {
+            priceInt = Integer.parseInt(Precio);
+            if (priceInt < 0) {
+                JOptionPane.showMessageDialog(null, "Cost cannot be negative.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Cost must be a valid number.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        String[][] aux = getArrayProductos();
+        for (String[] product : aux) {
+            if (nombre.equals(product[2])) {
+                JOptionPane.showMessageDialog(null, "A product with this name already exists.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+        
+        Producto producto=new Producto(0, tipo, nombre, descripcion, priceInt, Img);
+        productosDAO.addProducto(producto, tipoAux);
+   
+    }
+    
+    public void deleteProducto(String nombre){
+        String[][] aux=getArrayProductos();
+        for(String[] product : aux){
+            if(nombre.equals(product[2])){
+                productosDAO.deleteProducto(nombre);
+                return;
+            }
+        }
+        JOptionPane.showMessageDialog(null, "No product exists with this name.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+    }
+    
+    public void updateProducto(String tipo,String nombre,String descripcion,String Precio,String Img){
+        int tipoAux=0;
+        String [][] tipos=getArrayTipos();
+        for(String[] tipe:tipos){
+            if(tipe[1].equals(tipo))
+                tipoAux=Integer.parseInt(tipe[0]);
+        }
+        
+         if (nombre.isEmpty() || descripcion.isEmpty() || Precio.isEmpty() || Img.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "All fields are mandatory. Please fill in all fields.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if (nombre.matches(".*[\\d\\W].*")) {
+            JOptionPane.showMessageDialog(null, "The name cannot contain numbers or special characters.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+       
+        
+        int priceInt;
+        try {
+            priceInt = Integer.parseInt(Precio);
+            if (priceInt < 0) {
+                JOptionPane.showMessageDialog(null, "Cost cannot be negative.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Cost must be a valid number.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        Producto producto=new Producto(0, tipo, nombre, descripcion, priceInt, Img);
+        String[][] aux=getArrayProductos();
+        for(String[] product : aux){
+            if(nombre.equals(product[2])){
+                productosDAO.updateProducto(producto,tipoAux);
+                return;
+            }
+        }
+        JOptionPane.showMessageDialog(null, "No product exists with this name.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+        
+   
     }
     
     

@@ -14,25 +14,13 @@ public class MainController {
     private MainView mainView;
 
     public MainController() {
-        mainView = new MainView();
         ClientesController clientesController=new ClientesController();
-        mainView.setMainController(this);
-        mainView.setClientesController(clientesController);
+        ProductosController productosController=new ProductosController();
+        mainView = new MainView(this,clientesController,productosController);
     }
 
     public void showMainView() {
         mainView.setVisible(true);
     }
 
-    public void showClienteView() {
-
-    }
-
-    public void showProductoView() {
-
-    }
-
-    public void showVentaView() {
-
-    }
 }

@@ -17,7 +17,7 @@ public class TipoProductoDAO {
     
     public ArrayList<TipoProducto> getAllTiposProducto() {
         ArrayList<TipoProducto> tipos = new ArrayList<>();
-        String sql = "SELECT * FROM tipos_producto";
+        String sql = "SELECT * FROM tipo_producto";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
