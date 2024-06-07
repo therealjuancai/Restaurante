@@ -16,7 +16,8 @@ public class MainController {
     public MainController() {
         ClientesController clientesController=new ClientesController();
         ProductosController productosController=new ProductosController();
-        mainView = new MainView(this,clientesController,productosController);
+        VentasController ventasController=new VentasController();
+        mainView = new MainView(this,clientesController,productosController,ventasController);
     }
 
     public void showMainView() {

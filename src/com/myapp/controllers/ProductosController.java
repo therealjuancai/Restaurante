@@ -78,9 +78,12 @@ public class ProductosController {
             if (priceInt < 0) {
                 JOptionPane.showMessageDialog(null, "Cost cannot be negative.", "Validation Error", JOptionPane.ERROR_MESSAGE);
                 return;
+            }else if (priceInt > 9999999) {
+                JOptionPane.showMessageDialog(null, "Cost must be less than 7 digits.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Cost must be a valid number.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "cost must be a valid number and less than 7 digits.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         

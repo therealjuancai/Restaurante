@@ -61,6 +61,9 @@ public class ClientesController {
             if (edadInt < 0) {
                 JOptionPane.showMessageDialog(null, "Age cannot be negative.", "Validation Error", JOptionPane.ERROR_MESSAGE);
                 return;
+            }else if (edadInt > 999) {
+                JOptionPane.showMessageDialog(null, "Quantity must be less than 4 digits.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Age must be a valid number.", "Validation Error", JOptionPane.ERROR_MESSAGE);

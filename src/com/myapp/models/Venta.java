@@ -9,44 +9,70 @@ package com.myapp.models;
  * @author juanc
  */
 public class Venta {
-     private int Producto;
-     private int Cantidad;
-     private int Cliente;
-     private String Fecha;
-     
-     public Venta(){}
+     private int id;
+     private String producto;
+     private int cantidad;
+     private String cliente;
+     private String fecha;
+     private int total;
 
-    public int getProducto() {
-        return Producto;
+    public Venta(int id, String producto, int cantidad, String cliente, String fecha, int total) {
+        this.id = id;
+        this.producto = producto;
+        this.cantidad = cantidad;
+        this.cliente = cliente;
+        this.fecha = fecha;
+        this.total = total;
     }
 
-    public void setProducto(int Producto) {
-        this.Producto = Producto;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getProducto() {
+        return producto;
+    }
+
+    public void setProducto(String producto) {
+        this.producto = producto;
     }
 
     public int getCantidad() {
-        return Cantidad;
+        return cantidad;
     }
 
-    public void setCantidad(int Cantidad) {
-        this.Cantidad = Cantidad;
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
     }
 
-    public int getCliente() {
-        return Cliente;
+    public String getCliente() {
+        return cliente;
     }
 
-    public void setCliente(int Cliente) {
-        this.Cliente = Cliente;
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
     }
 
     public String getFecha() {
-        return Fecha;
+        return fecha;
     }
 
-    public void setFecha(String Fecha) {
-        this.Fecha = Fecha;
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
     }
-     
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    
      
 }

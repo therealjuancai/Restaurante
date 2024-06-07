@@ -12,6 +12,7 @@ package com.myapp.views;
 import com.myapp.controllers.ClientesController;
 import com.myapp.controllers.MainController;
 import com.myapp.controllers.ProductosController;
+import com.myapp.controllers.VentasController;
 import com.myapp.core.CustomTableModel;
 import javax.swing.*;
 import java.awt.*;
@@ -43,6 +44,7 @@ public class MainView extends JFrame implements ActionListener{
     private String[][]tiposDeProductos;
     
     //clientes
+    private ClientesController clientesController;
     private JInternalFrame frameClientes;
     private JButton bEditarCliente, bAnadirCliente, bShowStatisticsCliente,bBorrarCliente, bMostrarCliente;
     private JLabel tvClienteNombre,tvClienteCedula,tvClienteGenero, tvClienteEdad, clienteTitulo;
@@ -53,10 +55,10 @@ public class MainView extends JFrame implements ActionListener{
     private JScrollPane scrollClientes;
     
     //Ventas
-    private ClientesController clientesController;
+    private VentasController ventasController;
     private JInternalFrame frameVentas;
     private JButton bEditarVenta, bAnadirVenta, bShowStatisticsVenta,bBorrarVenta, bMostrarVenta;
-    private JLabel tvVentaProducto,tvVentaCantidad,tvVentaCliente, tvVentaFecha, VentaTitulo;
+    private JLabel tvVentaProducto,tvVentaCantidad,tvVentaCliente, tvVentaFecha,tvVentaId, VentaId, VentaTitulo;
     private JTextField VentaCantidad, VentaFecha;
     private JComboBox VentaProducto,VentaCliente;
     private JTable tableVentas;
@@ -66,10 +68,11 @@ public class MainView extends JFrame implements ActionListener{
     private String[] menuProductos={""};
     
 
-    public MainView(MainController mainController, ClientesController clientesController, ProductosController productosController) {
+    public MainView(MainController mainController, ClientesController clientesController, ProductosController productosController, VentasController ventasController) {
         this.mainController = mainController;
         this.clientesController = clientesController;
         this.productosController=productosController;
+        this.ventasController=ventasController;
         initMain();
         visualizar();
         initListeners();
@@ -131,7 +134,6 @@ public class MainView extends JFrame implements ActionListener{
         
         for(int i=0;i<tiposDeProductos.length;i++){
             opciones[i]=tiposDeProductos[i][1];
-            System.out.println(opciones[i]+"lasd");
         }
         
         this.productoTipo=new JComboBox(opciones);
@@ -259,23 +261,27 @@ public class MainView extends JFrame implements ActionListener{
     }
     public void initVentas(){
         this.frameVentas = new JInternalFrame();
-       
+        
+        this.tvVentaId=new JLabel("");
         this.tvVentaProducto=new JLabel("Product:");
         this.tvVentaCantidad=new JLabel("Quantity:");
         this.tvVentaCliente=new JLabel("Customer:");
         this.tvVentaFecha=new JLabel("Date:");
         this.VentaTitulo=new JLabel("Sells");
         
-        String[] columnNames={"Product", "Quantity", "Customer", "Date","Total Value"};
+        
+        String[] columnNames={"id","Product", "Quantity", "Customer", "Date","Total Value"};
         VentasModel = new CustomTableModel(columnNames,0);
         tableVentas = new JTable(VentasModel);
         
         this.scrollVentas=new JScrollPane(tableVentas);
         
+        
         Font font = new Font("Arial", Font.BOLD, 24);
         VentaTitulo.setFont(font);
         VentaTitulo.setBounds(30, 30, 500, 20);
         
+        tvVentaId.setBounds(570, 70, 50, 20);
         tvVentaProducto.setBounds(30, 90, 100, 20);
         tvVentaCantidad.setBounds(30, 120, 100, 20);
         tvVentaCliente.setBounds(30, 150, 100, 20);
@@ -283,11 +289,16 @@ public class MainView extends JFrame implements ActionListener{
         
         scrollVentas.setBounds(30, 230, 820, 450);
        
+        
+        this.VentaId=new JLabel("");
+        this.menuProductos=ventasController.getNamesProductos();
         this.VentaProducto=new JComboBox(menuProductos);
         this.VentaCantidad=new JTextField("");
         this.VentaFecha=new JTextField("");
+        this.menuClientes=ventasController.getNamesClientes();
         this.VentaCliente=new JComboBox(menuClientes);
         
+        VentaId.setBounds(630, 70, 50, 20);
         VentaProducto.setBounds(130, 90, 400, 20);
         VentaCantidad.setBounds(130, 120, 400, 20);
         VentaCliente.setBounds(130, 150, 400, 20);
@@ -312,6 +323,7 @@ public class MainView extends JFrame implements ActionListener{
         this.frameVentas.setLayout(null);
         
         this.frameVentas.add(VentaTitulo);
+        this.frameVentas.add(tvVentaId);
         this.frameVentas.add(tvVentaProducto);
         this.frameVentas.add( tvVentaCantidad);
         this.frameVentas.add(tvVentaCliente);
@@ -319,6 +331,7 @@ public class MainView extends JFrame implements ActionListener{
         
         this.frameVentas.add(scrollVentas);
         
+        this.frameVentas.add(VentaId);
         this.frameVentas.add(VentaProducto);
         this.frameVentas.add(VentaCantidad);
         this.frameVentas.add(VentaCliente);
@@ -351,7 +364,7 @@ public class MainView extends JFrame implements ActionListener{
                 productoDescripcion.setText((String)tableProductos.getValueAt(row, 3));
                 productoPrecio.setText((String)tableProductos.getValueAt(row, 4));
                 txtImagen.setText((String)tableProductos.getValueAt(row, 5));
-                
+            
         }
     }
         });
@@ -380,6 +393,24 @@ public class MainView extends JFrame implements ActionListener{
     
     public void listenersVentas(){
         this.ventanaVentas.addActionListener(this);
+        this.bMostrarVenta.addActionListener(this);
+        this.bAnadirVenta.addActionListener(this);
+        this.bBorrarVenta.addActionListener(this);
+        this.bEditarVenta.addActionListener(this);
+        
+        tableVentas.addMouseListener(new MouseAdapter(){
+            @Override
+             public void mouseClicked(MouseEvent e) {
+            int row = tableVentas.getSelectedRow(); 
+            if (row != -1) {
+                VentaCantidad.setText((String)tableVentas.getValueAt(row, 2));
+                VentaFecha.setText((String)tableVentas.getValueAt(row, 4));
+                tvVentaId.setText("id:");
+                VentaId.setText((String)tableVentas.getValueAt(row, 0));
+        }
+    }
+        });
+        
     }
     
     public void visualizar(){
@@ -421,6 +452,14 @@ public class MainView extends JFrame implements ActionListener{
             for(String[] producto : data){
                 productosModel.addRow(producto);
             }
+            
+             menuProductos=ventasController.getNamesProductos();
+            VentaProducto.removeAllItems();
+            for (String item : menuProductos) {
+                VentaProducto.addItem(item);
+            }
+            
+
         }else if(e.getSource()==bBorrar){
             productosController.deleteProducto(productoNombre.getText());
             String[][] data=productosController.getArrayProductos();
@@ -428,6 +467,14 @@ public class MainView extends JFrame implements ActionListener{
             for(String[] producto : data){
                 productosModel.addRow(producto);
             }
+            
+            menuProductos=ventasController.getNamesProductos();
+            VentaProducto.removeAllItems();
+            for (String item : menuProductos) {
+                VentaProducto.addItem(item);
+            }
+            
+            limpiarCamposProducto();
         }else if(e.getSource()==bEditar){
             productosController.updateProducto(productoTipo.getSelectedItem().toString(),productoNombre.getText(), productoDescripcion.getText(), productoPrecio.getText(), txtImagen.getText());
             String[][] data=productosController.getArrayProductos();
@@ -435,6 +482,14 @@ public class MainView extends JFrame implements ActionListener{
             for(String[] producto : data){
                 productosModel.addRow(producto);
             }
+            
+            menuProductos=ventasController.getNamesProductos();
+            VentaProducto.removeAllItems();
+            for (String item : menuProductos) {
+                VentaProducto.addItem(item);
+            }
+            
+            limpiarCamposProducto();
         }
     }
     private void accionesCliente(ActionEvent e){
@@ -459,6 +514,14 @@ public class MainView extends JFrame implements ActionListener{
             for(String[] cliente : data){
                 ClientesModel.addRow(cliente);
             }
+            
+            menuClientes=ventasController.getNamesClientes();
+            VentaCliente.removeAllItems();
+            for (String item : menuClientes) {
+                VentaCliente.addItem(item);
+            }
+            
+
         }else if(e.getSource()==bBorrarCliente){
             clientesController.deleteCliente(ClienteCedula.getText());
             String[][] data = clientesController.getArrayClientes();
@@ -466,6 +529,14 @@ public class MainView extends JFrame implements ActionListener{
             for(String[] cliente : data){
                 ClientesModel.addRow(cliente);
             }
+            
+             menuClientes=ventasController.getNamesClientes();
+            VentaCliente.removeAllItems();
+            for (String item : menuClientes) {
+                VentaCliente.addItem(item);
+            }
+            
+            limpiarCamposCliente();
         }else if(e.getSource()==bEditarCliente){
             clientesController.updateCliente(ClienteNombre.getText(),ClienteCedula.getText(), ClienteGenero.getSelectedItem().toString(), ClienteEdad.getText());
             String[][] data = clientesController.getArrayClientes();
@@ -473,6 +544,14 @@ public class MainView extends JFrame implements ActionListener{
             for(String[] cliente : data){
                 ClientesModel.addRow(cliente);
             }
+            
+            menuClientes=ventasController.getNamesClientes();
+            VentaCliente.removeAllItems();
+            for (String item : menuClientes) {
+                VentaCliente.addItem(item);
+            }
+            
+            limpiarCamposCliente();
         }
     
     }
@@ -481,12 +560,61 @@ public class MainView extends JFrame implements ActionListener{
             frameClientes.show(false);
             frameProductos.show(false);
             frameVentas.show(true);
+            String[][] data=ventasController.getArrayVentas();
+            VentasModel.setRowCount(0);
+            for(String[] venta : data){
+                VentasModel.addRow(venta);
+            }
             try {
                 frameVentas.setMaximum(true);
             } catch (PropertyVetoException ex) {
                 System.out.println("Fallo");
             }
+        }else if(e.getSource()==bAnadirVenta){
+            ventasController.addVenta(VentaProducto.getSelectedItem().toString(), VentaCantidad.getText(), VentaCliente.getSelectedItem().toString(), VentaFecha.getText());
+            String[][] data=ventasController.getArrayVentas();
+            VentasModel.setRowCount(0);
+            for(String[] venta : data){
+                VentasModel.addRow(venta);
+            }
+
+        }else if(e.getSource()==bBorrarVenta){
+            ventasController.deleteVenta(VentaId.getText());
+            String[][] data=ventasController.getArrayVentas();
+            VentasModel.setRowCount(0);
+            for(String[] venta : data){
+                VentasModel.addRow(venta);
+            }
+            limpiarCamposVenta();
+        }else if(e.getSource()==bEditarVenta){
+            ventasController.updateVenta(VentaId.getText(),VentaProducto.getSelectedItem().toString(), VentaCantidad.getText(), VentaCliente.getSelectedItem().toString(), VentaFecha.getText());
+            String[][] data=ventasController.getArrayVentas();
+            VentasModel.setRowCount(0);
+            for(String[] venta : data){
+                VentasModel.addRow(venta);
+            }
+            limpiarCamposVenta();
         }
+    }
+    
+    public void limpiarCamposProducto(){
+        productoNombre.setText("");
+        productoDescripcion.setText("");
+        productoPrecio.setText("");
+        txtImagen.setText("");
+    }
+    
+    public void limpiarCamposCliente(){
+        ClienteNombre.setText("");
+        ClienteCedula.setText("");
+        ClienteEdad.setText("");
+    }
+    
+    public void limpiarCamposVenta(){
+        VentaCantidad.setText("");
+        VentaFecha.setText("");
+        tvVentaId.setText("");
+        VentaId.setText("");
     }
     
 }
